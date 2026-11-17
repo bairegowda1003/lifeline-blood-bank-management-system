@@ -293,6 +293,8 @@ class DashboardView(tk.Frame):
         self.tree_recent_donors.column("group", width=55, anchor="center")
         self.tree_recent_donors.column("phone", width=105, anchor="center")
         self.tree_recent_donors.column("eligibility", width=95, anchor="center")
+        self.tree_recent_donors.tag_configure("evenrow", background="#FFFFFF")
+        self.tree_recent_donors.tag_configure("oddrow", background="#F8FAFC")
         self.tree_recent_donors.grid(row=1, column=0, sticky="nsew")
 
         # Card 2: Recent Hospital Requests
@@ -308,7 +310,7 @@ class DashboardView(tk.Frame):
             r_hdr,
             text="Recent Hospital Requisitions",
             font=config.FONT_SUBHEADER,
-            fg=config.PRIMARY_DARK_TEAL,
+            fg=config.COLOR_DARK_NAVY,
             bg=config.CARD_BACKGROUND
         ).pack(side="left")
 
@@ -338,45 +340,8 @@ class DashboardView(tk.Frame):
         self.tree_recent_requests.column("group", width=55, anchor="center")
         self.tree_recent_requests.column("units", width=65, anchor="center")
         self.tree_recent_requests.column("status", width=90, anchor="center")
-        self.tree_recent_requests.grid(row=1, column=0, sticky="nsew")
-
-        r_hdr = tk.Frame(reqs_box, bg=config.CARD_BACKGROUND)
-        r_hdr.grid(row=0, column=0, sticky="ew", pady=(0, 6))
-
-        tk.Label(
-            r_hdr,
-            text="Recent Hospital Requisitions",
-            font=config.FONT_SUBHEADER,
-            fg=config.PRIMARY_DARK_TEAL,
-            bg=config.CARD_BACKGROUND
-        ).pack(side="left")
-
-        ThemedButton(
-            r_hdr,
-            text="View All ➔",
-            btn_type="outline",
-            font=config.FONT_TINY,
-            padx=7,
-            pady=2,
-            command=lambda: self.navigate("requests")
-        ).pack(side="right")
-
-        # Treeview for Requests
-        self.tree_recent_requests = ttk.Treeview(
-            reqs_box,
-            columns=("hospital", "group", "units", "status"),
-            show="headings",
-            height=3
-        )
-        self.tree_recent_requests.heading("hospital", text="Hospital Name")
-        self.tree_recent_requests.heading("group", text="Group")
-        self.tree_recent_requests.heading("units", text="Units")
-        self.tree_recent_requests.heading("status", text="Status")
-
-        self.tree_recent_requests.column("hospital", width=160, anchor="w")
-        self.tree_recent_requests.column("group", width=55, anchor="center")
-        self.tree_recent_requests.column("units", width=65, anchor="center")
-        self.tree_recent_requests.column("status", width=90, anchor="center")
+        self.tree_recent_requests.tag_configure("evenrow", background="#FFFFFF")
+        self.tree_recent_requests.tag_configure("oddrow", background="#F8FAFC")
         self.tree_recent_requests.grid(row=1, column=0, sticky="nsew")
 
     def refresh(self):
@@ -519,53 +484,57 @@ class DashboardView(tk.Frame):
 
             StatusBadge(row_top, text=status_label, preset=status_preset).pack(side="right")
 
-            # Row 2: Units Metric
+            # Row 2: Units Metric (Left) & Batch Expiry (Right)
+            row_mid = tk.Frame(tile, bg="#FAFAFA")
+            row_mid.pack(fill="x", anchor="w", pady=(3, 2))
+
             lbl_u = tk.Label(
-                tile,
+                row_mid,
                 text=f"{units} Units Available",
                 font=config.FONT_BOLD,
                 fg=config.MAIN_TEXT,
                 bg="#FAFAFA"
             )
-            lbl_u.pack(anchor="w", pady=(2, 1))
+            lbl_u.pack(side="left")
 
-            # Row 3: Visual Progress Bar (Capacity against 25 units benchmark)
-            pbar = StockProgressBar(tile, value=units, max_value=25, color=bar_color, height=4)
-            pbar.pack(fill="x", pady=(1, 2))
-
-            # Row 4: Dedicated Batch Expiry Line (No horizontal squeeze or clipping)
             lbl_exp = tk.Label(
-                tile,
-                text=f"📅 Batch Exp: {exp or 'Not Set'}",
+                row_mid,
+                text=f"📅 {exp or 'Not Set'}",
                 font=config.FONT_TINY,
                 fg=config.SECONDARY_TEXT,
                 bg="#FAFAFA"
             )
-            lbl_exp.pack(anchor="w")
+            lbl_exp.pack(side="right")
+
+            # Row 3: Visual Progress Bar (Capacity against 25 units benchmark)
+            pbar = StockProgressBar(tile, value=units, max_value=25, color=bar_color, height=4)
+            pbar.pack(fill="x", pady=(2, 1))
 
             col_idx += 1
             if col_idx > 1:
                 col_idx = 0
                 row_idx += 1
 
-        # 4. Populate Recent Donors Table (Distinct latest 5)
+        # 4. Populate Recent Donors Table (Distinct latest 5 with alternating zebra rows)
         for item in self.tree_recent_donors.get_children():
             self.tree_recent_donors.delete(item)
-        for donor in stats["recent_donors"]:
+        for i, donor in enumerate(stats["recent_donors"]):
+            row_tag = "evenrow" if i % 2 == 0 else "oddrow"
             self.tree_recent_donors.insert("", "end", values=(
                 donor["name"],
                 donor["blood_group"],
                 donor["phone"],
                 donor["eligibility"]
-            ))
+            ), tags=(row_tag,))
 
-        # 5. Populate Recent Requests Table (Distinct latest 5)
+        # 5. Populate Recent Requests Table (Distinct latest 5 with alternating zebra rows)
         for item in self.tree_recent_requests.get_children():
             self.tree_recent_requests.delete(item)
-        for req in stats["recent_requests"]:
+        for i, req in enumerate(stats["recent_requests"]):
+            row_tag = "evenrow" if i % 2 == 0 else "oddrow"
             self.tree_recent_requests.insert("", "end", values=(
                 req["hospital_name"],
                 req["blood_group"],
                 f"{req['units_needed']} units",
                 req["req_status"]
-            ))
+            ), tags=(row_tag,))

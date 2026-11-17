@@ -140,19 +140,19 @@ class RequestsView(tk.Frame):
         self.combo_status.set(config.REQUEST_STATUSES[0])  # "Pending"
         self.combo_status.grid(row=7, column=0, columnspan=2, sticky="ew", pady=(0, 10))
 
-        # Safety Rules Note Box
-        rule_box = tk.Frame(form_card, bg="#F8FAFC", padx=10, pady=8, highlightbackground=config.BORDER, highlightthickness=1)
-        rule_box.grid(row=8, column=0, columnspan=2, sticky="ew", pady=(2, 14))
+        # Safety Rules Note Box (Soft Pink Emergency Information Panel)
+        rule_box = tk.Frame(form_card, bg=config.COLOR_SOFT_PINK, padx=10, pady=8, highlightbackground="#FECACA", highlightthickness=1)
+        rule_box.grid(row=8, column=0, columnspan=2, sticky="ew", pady=(2, 12))
 
         tk.Label(
             rule_box,
-            text="🛡️  Safe Inventory Dispensing Rules:\n"
+            text="🚨 Safe Emergency Dispensing Rules:\n"
                  "• 'Pending', 'Approved', and 'Rejected' do not alter stock.\n"
                  "• 'Fulfilled' verifies stock and deducts units in an atomic transaction.\n"
                  "• Modifying or deleting a fulfilled request safely adjusts inventory.",
             font=config.FONT_TINY,
-            fg=config.SECONDARY_TEXT,
-            bg="#F8FAFC",
+            fg=config.COLOR_MEDICAL_RED,
+            bg=config.COLOR_SOFT_PINK,
             justify="left"
         ).pack(anchor="w")
 
@@ -377,6 +377,10 @@ class RequestsView(tk.Frame):
         vsb.grid(row=0, column=1, sticky="ns")
         hsb.grid(row=1, column=0, sticky="ew")
 
+        # Alternating row tag colors
+        self.tree.tag_configure("evenrow", background="#FFFFFF")
+        self.tree.tag_configure("oddrow", background="#F8FAFC")
+
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
 
     def on_group_or_units_changed(self, event):
@@ -415,14 +419,15 @@ class RequestsView(tk.Frame):
         else:
             reqs = requests_list
 
-        for r in reqs:
+        for i, r in enumerate(reqs):
+            row_tag = "evenrow" if i % 2 == 0 else "oddrow"
             self.tree.insert("", "end", values=(
                 r["req_id"],
                 r["hospital_name"],
                 r["blood_group"],
                 f"{r['units_needed']} units",
                 r["req_status"]
-            ))
+            ), tags=(row_tag,))
 
         self.lbl_count.config(text=f"{len(reqs)} request(s) listed in log")
 

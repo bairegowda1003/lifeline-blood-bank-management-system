@@ -167,6 +167,10 @@ class BloodStockView(tk.Frame):
         self.tree.grid(row=0, column=0, sticky="nsew")
         vsb.grid(row=0, column=1, sticky="ns")
 
+        # Alternating row tag colors
+        self.tree.tag_configure("evenrow", background="#FFFFFF")
+        self.tree.tag_configure("oddrow", background="#F8FAFC")
+
         self.tree.bind("<<TreeviewSelect>>", self.on_stock_row_select)
 
     def _build_donation_tab(self, parent):
@@ -424,6 +428,7 @@ class BloodStockView(tk.Frame):
         filter_mode = self.var_filter.get()
         stock_rows = self.db.get_all_stock()
 
+        row_idx = 0
         for item in stock_rows:
             units = item["units_available"]
             exp = item["expiry_date"]
@@ -455,13 +460,15 @@ class BloodStockView(tk.Frame):
             if filter_mode == "Expiry" and not (is_expired or is_soon):
                 continue
 
+            row_tag = "evenrow" if row_idx % 2 == 0 else "oddrow"
             self.tree.insert("", "end", values=(
                 item["stock_id"],
                 item["blood_group"],
                 f"{units} units",
                 exp or "N/A",
                 status
-            ))
+            ), tags=(row_tag,))
+            row_idx += 1
 
     def on_donation_donor_selected(self, event):
         """Updates preview when donor selection changes in donation form."""

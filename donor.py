@@ -339,6 +339,10 @@ class DonorView(tk.Frame):
         vsb.grid(row=0, column=1, sticky="ns")
         hsb.grid(row=1, column=0, sticky="ew")
 
+        # Alternating row tag colors
+        self.tree.tag_configure("evenrow", background="#FFFFFF")
+        self.tree.tag_configure("oddrow", background="#F8FAFC")
+
         # Row selection event
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
 
@@ -368,7 +372,8 @@ class DonorView(tk.Frame):
         else:
             donors = donors_list
 
-        for d in donors:
+        for i, d in enumerate(donors):
+            row_tag = "evenrow" if i % 2 == 0 else "oddrow"
             self.tree.insert("", "end", values=(
                 d["donor_id"],
                 d["name"],
@@ -376,7 +381,7 @@ class DonorView(tk.Frame):
                 d["phone"],
                 d["last_donation_date"] or "Never",
                 d["eligibility"]
-            ))
+            ), tags=(row_tag,))
 
         self.lbl_count.config(text=f"{len(donors)} donor(s) registered in directory")
 
