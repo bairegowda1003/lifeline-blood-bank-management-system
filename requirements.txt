@@ -1,0 +1,7 @@
+# Blood Bank Donor Directory & Stock Tracker
+# MCA Mini Project - Python 3.12+ Dependencies
+
+tkcalendar>=1.6.1
+babel>=2.14.0
+ttkbootstrap>=2.2.7
+Pillow>=10.0.0
