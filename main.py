@@ -61,7 +61,7 @@ class AboutHelpView(tk.Frame):
         # -------------------------------------------------------------
         # LEFT CARD: ACADEMIC PROFILE & DEMO MANAGEMENT
         # -------------------------------------------------------------
-        left_card = Card(container, bg=config.CARD_BACKGROUND, padx=20, pady=18)
+        left_card = Card(container, bg=config.CARD_BACKGROUND, accent_color=config.COLOR_PRIMARY_CYAN, padx=20, pady=16)
         left_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
         left_card.columnconfigure(0, weight=1)
 
@@ -69,7 +69,7 @@ class AboutHelpView(tk.Frame):
             left_card,
             text="🎓 Academic Project Profile",
             font=config.FONT_HERO,
-            fg=config.PRIMARY_DARK_TEAL,
+            fg=config.COLOR_DARK_NAVY,
             bg=config.CARD_BACKGROUND
         ).pack(anchor="w", pady=(0, 4))
 
@@ -149,7 +149,7 @@ class AboutHelpView(tk.Frame):
         # -------------------------------------------------------------
         # RIGHT CARD: ARCHITECTURE & WORKFLOW SUMMARY
         # -------------------------------------------------------------
-        right_card = Card(container, bg=config.CARD_BACKGROUND, padx=20, pady=18)
+        right_card = Card(container, bg=config.CARD_BACKGROUND, accent_color=config.COLOR_PRIMARY_CYAN, padx=20, pady=16)
         right_card.grid(row=0, column=1, sticky="nsew", padx=(10, 0))
         right_card.columnconfigure(0, weight=1)
         right_card.rowconfigure(1, weight=1)
@@ -158,7 +158,7 @@ class AboutHelpView(tk.Frame):
             right_card,
             text="📖 Workflow & Architecture Summary",
             font=config.FONT_HERO,
-            fg=config.PRIMARY_DARK_TEAL,
+            fg=config.COLOR_DARK_NAVY,
             bg=config.CARD_BACKGROUND
         ).pack(anchor="w", pady=(0, 4))
 
@@ -271,22 +271,22 @@ class BloodBankApp(tk.Tk):
                     name="lifeline",
                     mode="light",
                     colors={
-                        "primary": config.PRIMARY_TEAL,
+                        "primary": config.COLOR_PRIMARY_CYAN,
                         "secondary": config.SECONDARY_TEXT,
                         "success": config.COLOR_SUCCESS,
-                        "info": config.COLOR_INFO,
+                        "info": config.COLOR_PRIMARY_CYAN,
                         "warning": config.COLOR_WARNING,
-                        "danger": config.COLOR_DANGER,
-                        "light": config.BACKGROUND,
-                        "dark": config.PRIMARY_DARK_TEAL,
-                        "bg": config.BACKGROUND,
-                        "fg": config.MAIN_TEXT,
-                        "selectbg": config.ACCENT_MINT,
+                        "danger": config.COLOR_MEDICAL_RED,
+                        "light": config.COLOR_SOFT_BG,
+                        "dark": config.COLOR_DARK_NAVY,
+                        "bg": config.COLOR_SOFT_BG,
+                        "fg": config.COLOR_MAIN_TEXT,
+                        "selectbg": config.COLOR_PRIMARY_CYAN,
                         "selectfg": "#FFFFFF",
                         "border": config.BORDER,
-                        "inputfg": config.MAIN_TEXT,
+                        "inputfg": config.COLOR_MAIN_TEXT,
                         "inputbg": "#FFFFFF",
-                        "active": "#E2E8F0"
+                        "active": config.COLOR_DEEP_NAVY
                     }
                 )
                 style.register_theme(td)
@@ -304,7 +304,7 @@ class BloodBankApp(tk.Tk):
         style.configure(
             "Treeview",
             background="#FFFFFF",
-            foreground=config.MAIN_TEXT,
+            foreground=config.COLOR_MAIN_TEXT,
             rowheight=28,
             fieldbackground="#FFFFFF",
             font=config.FONT_REGULAR,
@@ -313,19 +313,19 @@ class BloodBankApp(tk.Tk):
         style.configure(
             "Treeview.Heading",
             background="#F1F5F9",
-            foreground=config.PRIMARY_DARK_TEAL,
+            foreground=config.COLOR_DARK_NAVY,
             font=config.FONT_SMALL_BOLD,
             relief="flat",
             padding=6
         )
         style.map(
             "Treeview.Heading",
-            background=[("active", "#E2E8F0")]
+            background=[("active", config.COLOR_LIGHT_CYAN)]
         )
         style.map(
             "Treeview",
-            background=[("selected", config.TINT_MINT_LIGHT)],
-            foreground=[("selected", config.PRIMARY_DARK_TEAL)]
+            background=[("selected", config.COLOR_LIGHT_CYAN)],
+            foreground=[("selected", config.COLOR_DARK_NAVY)]
         )
 
         # Notebook tabs
@@ -344,29 +344,29 @@ class BloodBankApp(tk.Tk):
         style.map(
             "TNotebook.Tab",
             background=[("selected", config.CARD_BACKGROUND)],
-            foreground=[("selected", config.PRIMARY_TEAL)]
+            foreground=[("selected", config.COLOR_PRIMARY_CYAN)]
         )
 
     def _build_sidebar(self):
-        """Constructs modern healthcare navigation sidebar."""
-        self.sidebar = tk.Frame(self, bg=config.PRIMARY_DARK_TEAL, width=250)
+        """Constructs modern healthcare navigation sidebar with Dark Navy & Cyan styling."""
+        self.sidebar = tk.Frame(self, bg=config.COLOR_DARK_NAVY, width=250)
         self.sidebar.grid(row=0, column=0, rowspan=3, sticky="nsew")
         self.sidebar.grid_propagate(False)
         self.sidebar.columnconfigure(0, weight=1)
 
         # Brand / Logo Header
-        brand_box = tk.Frame(self.sidebar, bg=config.PRIMARY_DARK_TEAL, padx=20, pady=24)
+        brand_box = tk.Frame(self.sidebar, bg=config.COLOR_DARK_NAVY, padx=20, pady=24)
         brand_box.pack(fill="x")
 
-        brand_row = tk.Frame(brand_box, bg=config.PRIMARY_DARK_TEAL)
+        brand_row = tk.Frame(brand_box, bg=config.COLOR_DARK_NAVY)
         brand_row.pack(anchor="w")
 
         tk.Label(
             brand_row,
             text="✚",
             font=("Segoe UI", 18, "bold"),
-            fg=config.ACCENT_MINT,
-            bg=config.PRIMARY_DARK_TEAL
+            fg=config.COLOR_PRIMARY_CYAN,
+            bg=config.COLOR_DARK_NAVY
         ).pack(side="left", padx=(0, 8))
 
         tk.Label(
@@ -374,19 +374,19 @@ class BloodBankApp(tk.Tk):
             text=config.APP_BRAND,
             font=("Segoe UI", 18, "bold"),
             fg="#FFFFFF",
-            bg=config.PRIMARY_DARK_TEAL
+            bg=config.COLOR_DARK_NAVY
         ).pack(side="left")
 
         tk.Label(
             brand_box,
             text="Blood Bank Management",
             font=config.FONT_SMALL,
-            fg="#99F6E4",
-            bg=config.PRIMARY_DARK_TEAL
+            fg=config.COLOR_LIGHT_CYAN,
+            bg=config.COLOR_DARK_NAVY
         ).pack(anchor="w", pady=(3, 0))
 
         # Thin divider
-        tk.Frame(self.sidebar, bg="#154D4E", height=1).pack(fill="x", padx=18, pady=12)
+        tk.Frame(self.sidebar, bg=config.COLOR_DEEP_NAVY, height=1).pack(fill="x", padx=18, pady=12)
 
         # Navigation Items List
         nav_items = [
@@ -398,16 +398,16 @@ class BloodBankApp(tk.Tk):
             ("exit",      "🚪  Exit System")
         ]
 
-        self.nav_frame = tk.Frame(self.sidebar, bg=config.PRIMARY_DARK_TEAL)
+        self.nav_frame = tk.Frame(self.sidebar, bg=config.COLOR_DARK_NAVY)
         self.nav_frame.pack(fill="both", expand=True, padx=12, pady=4)
 
         for key, label in nav_items:
-            item_frame = tk.Frame(self.nav_frame, bg=config.PRIMARY_DARK_TEAL)
+            item_frame = tk.Frame(self.nav_frame, bg=config.COLOR_DARK_NAVY)
             item_frame.pack(fill="x", pady=3)
             item_frame.columnconfigure(1, weight=1)
 
-            # Left active accent indicator line
-            indicator = tk.Frame(item_frame, bg=config.PRIMARY_DARK_TEAL, width=4)
+            # Left active accent indicator line (Cyan)
+            indicator = tk.Frame(item_frame, bg=config.COLOR_DARK_NAVY, width=4)
             indicator.grid(row=0, column=0, sticky="ns")
             self.sidebar_indicators[key] = indicator
 
@@ -416,8 +416,8 @@ class BloodBankApp(tk.Tk):
                 text=label,
                 font=config.FONT_BOLD,
                 fg="#CBD5E1",
-                bg=config.PRIMARY_DARK_TEAL,
-                activebackground=config.HOVER_SIDEBAR,
+                bg=config.COLOR_DARK_NAVY,
+                activebackground=config.COLOR_DEEP_NAVY,
                 activeforeground="#FFFFFF",
                 relief="flat",
                 anchor="w",
@@ -434,15 +434,15 @@ class BloodBankApp(tk.Tk):
             btn.bind("<Leave>", lambda e, k=key: self._on_nav_hover(k, False))
 
         # Bottom Student Profile Card
-        stud_card = tk.Frame(self.sidebar, bg="#0A2C2D", padx=14, pady=12)
+        stud_card = tk.Frame(self.sidebar, bg=config.COLOR_DEEP_NAVY, padx=14, pady=12)
         stud_card.pack(fill="x", side="bottom", padx=14, pady=16)
 
         tk.Label(
             stud_card,
             text="MCA Mini Project",
             font=config.FONT_SMALL_BOLD,
-            fg=config.ACCENT_MINT,
-            bg="#0A2C2D"
+            fg=config.COLOR_PRIMARY_CYAN,
+            bg=config.COLOR_DEEP_NAVY
         ).pack(anchor="w")
 
         tk.Label(
@@ -450,7 +450,7 @@ class BloodBankApp(tk.Tk):
             text=f"{config.STUDENT_NAME}\nID: {config.STUDENT_ID}",
             font=config.FONT_SMALL,
             fg="#94A3B8",
-            bg="#0A2C2D",
+            bg=config.COLOR_DEEP_NAVY,
             justify="left"
         ).pack(anchor="w", pady=(2, 6))
 
@@ -459,7 +459,7 @@ class BloodBankApp(tk.Tk):
             text="● System Online (SQLite)",
             font=config.FONT_TINY,
             fg=config.COLOR_SUCCESS,
-            bg="#0A2C2D"
+            bg=config.COLOR_DEEP_NAVY
         ).pack(anchor="w")
 
     def _on_nav_hover(self, key, is_entering):
@@ -469,9 +469,9 @@ class BloodBankApp(tk.Tk):
         btn = self.sidebar_buttons.get(key)
         if btn:
             if is_entering:
-                btn.config(bg=config.HOVER_SIDEBAR, fg="#FFFFFF")
+                btn.config(bg=config.COLOR_DEEP_NAVY, fg="#FFFFFF")
             else:
-                btn.config(bg=config.PRIMARY_DARK_TEAL, fg="#CBD5E1")
+                btn.config(bg=config.COLOR_DARK_NAVY, fg="#CBD5E1")
 
     def _build_topbar(self):
         """Clean top header bar with page title, clock, and demo actions."""
@@ -602,13 +602,13 @@ class BloodBankApp(tk.Tk):
         for key, btn in self.sidebar_buttons.items():
             indicator = self.sidebar_indicators.get(key)
             if key == view_name:
-                btn.config(bg=config.PRIMARY_TEAL, fg="#FFFFFF")
+                btn.config(bg=config.COLOR_DEEP_NAVY, fg=config.COLOR_PRIMARY_CYAN)
                 if indicator:
-                    indicator.config(bg=config.ACCENT_MINT)
+                    indicator.config(bg=config.COLOR_PRIMARY_CYAN)
             else:
-                btn.config(bg=config.PRIMARY_DARK_TEAL, fg="#CBD5E1")
+                btn.config(bg=config.COLOR_DARK_NAVY, fg="#CBD5E1")
                 if indicator:
-                    indicator.config(bg=config.PRIMARY_DARK_TEAL)
+                    indicator.config(bg=config.COLOR_DARK_NAVY)
 
         # Hide current view
         for v in self.views.values():

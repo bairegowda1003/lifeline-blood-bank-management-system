@@ -27,22 +27,24 @@
 
 ---
 
-## 🎨 New Brand Colour System
+## 🎨 Brand Colour System (Dark Navy, Cyan & Medical Red)
 
 | Role | Color Name | Hex Code | Purpose |
 | :--- | :--- | :---: | :--- |
-| **Primary Dark Teal** | Dark Teal | `#0F3D3E` | Navigation sidebar background, rich dark headers |
-| **Primary Teal** | Primary Teal | `#0F766E` | Primary buttons, active highlights, key focal points |
-| **Accent Mint** | Accent Mint | `#14B8A6` | Brand emblem, subtle highlights, active badges |
-| **Background** | Minimal Canvas | `#F5F8F8` | Superdesign-inspired modern minimal canvas background |
-| **Card Background** | Pure White | `#FFFFFF` | Cards, forms, data tables, elevated panels |
-| **Main Text** | Deep Slate | `#172B2A` | Primary typography and headings |
+| **Dark Navy** | Dark Navy | `#0B2545` | Navigation sidebar background, dark brand headers |
+| **Deep Navy** | Deep Navy | `#102F50` | Active sidebar item background, subheaders |
+| **Primary Cyan** | Primary Cyan | `#13B8CC` | Primary action buttons, active navigation indicators, highlights |
+| **Bright Teal** | Bright Teal | `#16B8C5` | Vivid focal accents, progress indicators, brand emblems |
+| **Light Cyan** | Light Cyan | `#E0FAFC` | Status pill backgrounds, selected row tint, soft container backgrounds |
+| **White** | Pure White | `#FFFFFF` | Cards, forms, data tables, elevated panels |
+| **Soft Background** | Soft Slate Canvas | `#F4F9FC` | Clean modern application background |
+| **Soft Pink** | Soft Pink | `#FFF0F1` | Emergency requisition backdrop, critical shortage tint |
+| **Medical Red** | Medical Red | `#DC3545` | Emergency actions, dispense button, critical shortages, destructive actions |
+| **Success Green** | Success Green | `#16A34A` | Optimal stock, verified donors, fulfilled requests |
+| **Warning Amber** | Warning Amber | `#D97706` | Low-stock notices, pending hospital requests |
+| **Main Text** | Deep Navy Text | `#142D45` | Primary typography and headings |
 | **Secondary Text** | Slate Gray | `#64748B` | Subtitles, labels, and helper guidance |
-| **Border** | Light Border | `#E2E8F0` | Subtle modern card outlines |
-| **Success** | Emerald | `#16A34A` | Optimal stock, verified donors, fulfilled requests |
-| **Warning** | Amber | `#D97706` | Low-stock notices, pending hospital requests |
-| **Danger** | Medical Red | `#DC4C4C` | Critical shortages, expired units, destructive actions |
-| **Info** | Royal Blue | `#2563EB` | Approved requests, informational alerts |
+| **Border** | Modern Border | `#E2E8F0` | Subtle modern card outlines |
 
 ---
 

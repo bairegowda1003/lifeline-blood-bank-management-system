@@ -81,8 +81,8 @@ class DashboardView(tk.Frame):
             cards_frame, 0,
             title="TOTAL REGISTERED DONORS",
             icon="👥",
-            icon_bg=config.TINT_INFO_LIGHT,
-            icon_fg=config.COLOR_INFO,
+            icon_bg=config.COLOR_LIGHT_CYAN,
+            icon_fg=config.COLOR_PRIMARY_CYAN,
             initial_val="0",
             initial_sub="Active in directory"
         )
@@ -92,8 +92,8 @@ class DashboardView(tk.Frame):
             cards_frame, 1,
             title="AVAILABLE BLOOD UNITS",
             icon="🩸",
-            icon_bg=config.TINT_MINT_LIGHT,
-            icon_fg=config.PRIMARY_TEAL,
+            icon_bg=config.COLOR_LIGHT_CYAN,
+            icon_fg=config.COLOR_PRIMARY_CYAN,
             initial_val="0",
             initial_sub="Tested & Usable RBC"
         )
@@ -103,8 +103,8 @@ class DashboardView(tk.Frame):
             cards_frame, 2,
             title="PENDING REQUESTS",
             icon="⏳",
-            icon_bg=config.TINT_WARNING_LIGHT,
-            icon_fg=config.COLOR_WARNING,
+            icon_bg=config.COLOR_SOFT_PINK,
+            icon_fg=config.COLOR_MEDICAL_RED,
             initial_val="0",
             initial_sub="Awaiting fulfillment"
         )
@@ -502,8 +502,8 @@ class DashboardView(tk.Frame):
                 row_top,
                 text=f" {bg_name} ",
                 font=config.FONT_BOLD,
-                fg=config.PRIMARY_DARK_TEAL,
-                bg=config.TINT_MINT_LIGHT,
+                fg=config.COLOR_DARK_NAVY,
+                bg=config.COLOR_LIGHT_CYAN,
                 padx=3,
                 pady=1
             )

@@ -133,7 +133,7 @@ class DonorView(tk.Frame):
             date_pattern="yyyy-mm-dd",
             maxdate=date.today(),
             font=config.FONT_REGULAR,
-            background=config.PRIMARY_DARK_TEAL,
+            background=config.COLOR_DARK_NAVY,
             foreground="white",
             borderwidth=1
         )

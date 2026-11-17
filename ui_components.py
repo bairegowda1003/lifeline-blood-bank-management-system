@@ -14,7 +14,7 @@ class Card(tk.Frame):
     """A clean white card with subtle border and consistent padding."""
 
     def __init__(self, parent, bg=config.CARD_BACKGROUND, border_color=config.BORDER,
-                 padx=16, pady=16, bd=1, **kwargs):
+                 accent_color=None, padx=16, pady=16, bd=1, **kwargs):
         super().__init__(
             parent,
             bg=bg,
@@ -24,6 +24,11 @@ class Card(tk.Frame):
             pady=pady,
             **kwargs
         )
+        self.accent_color = accent_color
+
+
+# Alias for explicit design architecture
+ModernCard = Card
 
 
 class PageHeader(tk.Frame):
@@ -65,9 +70,10 @@ class StatusBadge(tk.Label):
     PRESETS = {
         "success": (config.COLOR_SUCCESS, config.TINT_SUCCESS_LIGHT),
         "warning": (config.COLOR_WARNING, config.TINT_WARNING_LIGHT),
-        "danger":  (config.COLOR_DANGER,  config.TINT_DANGER_LIGHT),
-        "info":    (config.COLOR_INFO,    config.TINT_INFO_LIGHT),
-        "mint":    (config.PRIMARY_TEAL,  config.TINT_MINT_LIGHT),
+        "danger":  (config.COLOR_MEDICAL_RED, config.COLOR_SOFT_PINK),
+        "info":    (config.COLOR_INFO, config.TINT_INFO_LIGHT),
+        "cyan":    (config.COLOR_PRIMARY_CYAN, config.COLOR_LIGHT_CYAN),
+        "mint":    (config.COLOR_PRIMARY_CYAN, config.COLOR_LIGHT_CYAN),
         "neutral": (config.SECONDARY_TEXT, "#F1F5F9"),
     }
 
@@ -93,8 +99,7 @@ class StatusBadge(tk.Label):
 
 class GlassCard(tk.Frame):
     """
-    Superdesign-inspired elevated card with optional top accent color strip,
-    subtle border, and clean inner padding.
+    Superdesign and healthcare SaaS-inspired elevated card with optional top accent strip.
     """
 
     def __init__(self, parent, bg=config.CARD_BACKGROUND, border_color=config.BORDER,
@@ -116,34 +121,35 @@ class GlassCard(tk.Frame):
 
 class ThemedButton(tk.Button):
     """
-    A modern styled button with hover transition and semantic color presets:
-    - 'primary'  : Teal background, white text
-    - 'secondary': Clean light slate background, dark teal text
-    - 'danger'   : Red background, white text
-    - 'success'  : Green background, white text
-    - 'outline'  : White background with teal border
+    A modern styled healthcare button with smooth hover transitions:
+    - 'primary'        : Vivid Primary Cyan (#13B8CC), white text
+    - 'secondary'      : Clean light slate/cyan background, dark navy text
+    - 'danger'         : Medical Red (#DC3545), white text (Emergency actions)
+    - 'success'        : Green (#16A34A), white text
+    - 'outline'        : White background with cyan border (#13B8CC)
+    - 'outline_danger' : White background with red border (#DC3545)
     """
 
     STYLES = {
         "primary": {
-            "bg": config.PRIMARY_TEAL,
+            "bg": config.COLOR_PRIMARY_CYAN,
             "fg": "#FFFFFF",
-            "activebg": config.HOVER_TEAL,
+            "activebg": config.HOVER_CYAN,
             "activefg": "#FFFFFF",
             "bd": 0,
             "relief": "flat",
         },
         "secondary": {
             "bg": "#F1F5F9",
-            "fg": config.PRIMARY_DARK_TEAL,
+            "fg": config.COLOR_DARK_NAVY,
             "activebg": "#E2E8F0",
-            "activefg": config.PRIMARY_DARK_TEAL,
+            "activefg": config.COLOR_DARK_NAVY,
             "bd": 1,
             "relief": "solid",
             "highlightbackground": config.BORDER,
         },
         "danger": {
-            "bg": config.COLOR_DANGER,
+            "bg": config.COLOR_MEDICAL_RED,
             "fg": "#FFFFFF",
             "activebg": config.HOVER_DANGER,
             "activefg": "#FFFFFF",
@@ -160,12 +166,21 @@ class ThemedButton(tk.Button):
         },
         "outline": {
             "bg": "#FFFFFF",
-            "fg": config.PRIMARY_TEAL,
-            "activebg": config.TINT_MINT_LIGHT,
-            "activefg": config.PRIMARY_TEAL,
+            "fg": config.COLOR_PRIMARY_CYAN,
+            "activebg": config.COLOR_LIGHT_CYAN,
+            "activefg": config.COLOR_PRIMARY_CYAN,
             "bd": 1,
             "relief": "solid",
-            "highlightbackground": config.PRIMARY_TEAL,
+            "highlightbackground": config.COLOR_PRIMARY_CYAN,
+        },
+        "outline_danger": {
+            "bg": "#FFFFFF",
+            "fg": config.COLOR_MEDICAL_RED,
+            "activebg": config.COLOR_SOFT_PINK,
+            "activefg": config.COLOR_MEDICAL_RED,
+            "bd": 1,
+            "relief": "solid",
+            "highlightbackground": config.COLOR_MEDICAL_RED,
         }
     }
 
@@ -282,4 +297,13 @@ class StockProgressBar(tk.Canvas):
         fill_w = int(w * pct)
         if fill_w > 0:
             self.create_rectangle(0, 0, fill_w, h, fill=self.color, outline="")
+
+
+# =============================================================================
+# REUSABLE ARCHITECTURAL COMPONENT ALIASES
+# =============================================================================
+ModernButton = ThemedButton
+ModernHeader = PageHeader
+ModernCard = Card
+
 

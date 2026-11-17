@@ -182,8 +182,8 @@ class BloodStockView(tk.Frame):
         ).pack(anchor="w", pady=(0, 2))
 
         # Workflow note
-        note_box = tk.Frame(parent, bg="#F0FDFA", padx=10, pady=8, highlightbackground="#99F6E4", highlightthickness=1)
-        note_box.pack(fill="x", pady=(0, 12))
+        note_box = tk.Frame(parent, bg=config.COLOR_LIGHT_CYAN, padx=10, pady=8, highlightbackground=config.COLOR_PRIMARY_CYAN, highlightthickness=1)
+        note_box.pack(fill="x", pady=(0, 10))
 
         tk.Label(
             note_box,
@@ -191,8 +191,8 @@ class BloodStockView(tk.Frame):
                  "Recording a donation atomically increments blood units in stock "
                  "and updates the donor's last donation date together in SQLite.",
             font=config.FONT_TINY,
-            fg=config.PRIMARY_DARK_TEAL,
-            bg="#F0FDFA",
+            fg=config.COLOR_DARK_NAVY,
+            bg=config.COLOR_LIGHT_CYAN,
             justify="left",
             wraplength=340
         ).pack(anchor="w")
@@ -233,7 +233,7 @@ class BloodStockView(tk.Frame):
             date_pattern="yyyy-mm-dd",
             maxdate=date.today(),
             font=config.FONT_REGULAR,
-            background=config.PRIMARY_DARK_TEAL,
+            background=config.COLOR_DARK_NAVY,
             foreground="white"
         )
         self.date_donation.pack(fill="x", pady=(0, 8))
@@ -246,7 +246,7 @@ class BloodStockView(tk.Frame):
             date_pattern="yyyy-mm-dd",
             mindate=date.today(),
             font=config.FONT_REGULAR,
-            background=config.PRIMARY_DARK_TEAL,
+            background=config.COLOR_DARK_NAVY,
             foreground="white"
         )
         self.date_expiry.set_date(default_exp)
@@ -313,7 +313,7 @@ class BloodStockView(tk.Frame):
             parent,
             date_pattern="yyyy-mm-dd",
             font=config.FONT_REGULAR,
-            background=config.PRIMARY_DARK_TEAL,
+            background=config.COLOR_DARK_NAVY,
             foreground="white"
         )
         self.date_adjust_expiry.pack(fill="x", pady=(0, 18))

@@ -30,8 +30,8 @@ class RequestsView(tk.Frame):
         self.load_requests()
 
     def _build_form_panel(self):
-        """Constructs hospital requisition form in an elevated white card."""
-        form_card = Card(self, bg=config.CARD_BACKGROUND, padx=20, pady=16)
+        """Constructs hospital requisition form in an elevated white card with subtle medical red accent."""
+        form_card = Card(self, bg=config.CARD_BACKGROUND, accent_color=config.COLOR_MEDICAL_RED, padx=18, pady=12)
         form_card.grid(row=0, column=0, sticky="nsew", padx=(20, 8), pady=(12, 16))
         form_card.columnconfigure(1, weight=1)
 
@@ -40,7 +40,7 @@ class RequestsView(tk.Frame):
             form_card,
             text="Hospital Requisition Form",
             font=config.FONT_HEADER,
-            fg=config.PRIMARY_DARK_TEAL,
+            fg=config.COLOR_DARK_NAVY,
             bg=config.CARD_BACKGROUND
         ).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 2))
 
@@ -48,10 +48,10 @@ class RequestsView(tk.Frame):
             form_card,
             text="● Mode: Creating New Requisition",
             font=config.FONT_SMALL,
-            fg=config.PRIMARY_TEAL,
+            fg=config.COLOR_PRIMARY_CYAN,
             bg=config.CARD_BACKGROUND
         )
-        self.lbl_selected_id.grid(row=1, column=0, columnspan=2, sticky="w", pady=(0, 14))
+        self.lbl_selected_id.grid(row=1, column=0, columnspan=2, sticky="w", pady=(0, 10))
 
         # 1. Hospital Name
         FormFieldWrapper(
@@ -196,17 +196,43 @@ class RequestsView(tk.Frame):
         )
         self.btn_clear.grid(row=1, column=1, sticky="ew", padx=(4, 0), pady=4)
 
-        # Prominent Dispense Shortcut Button
+        # Quick Workflow Row: Approve & Reject
+        wf_grid = tk.Frame(form_card, bg=config.CARD_BACKGROUND)
+        wf_grid.grid(row=10, column=0, columnspan=2, sticky="ew", pady=(4, 0))
+        wf_grid.columnconfigure(0, weight=1)
+        wf_grid.columnconfigure(1, weight=1)
+
+        self.btn_approve = ThemedButton(
+            wf_grid,
+            text="✓ Approve Request",
+            btn_type="outline",
+            state="disabled",
+            pady=5,
+            command=self.quick_approve_request
+        )
+        self.btn_approve.grid(row=0, column=0, sticky="ew", padx=(0, 4))
+
+        self.btn_reject = ThemedButton(
+            wf_grid,
+            text="✗ Reject Request",
+            btn_type="outline_danger",
+            state="disabled",
+            pady=5,
+            command=self.quick_reject_request
+        )
+        self.btn_reject.grid(row=0, column=1, sticky="ew", padx=(4, 0))
+
+        # Prominent Emergency Dispense Button (Medical Red Accent)
         self.btn_fulfill_quick = ThemedButton(
             form_card,
-            text="⚡ Dispense Blood & Fulfil Selected",
-            btn_type="success",
+            text="🚨 Dispense Blood & Fulfil Selected",
+            btn_type="danger",
             font=config.FONT_BOLD,
-            pady=9,
+            pady=8,
             state="disabled",
             command=self.quick_fulfill_request
         )
-        self.btn_fulfill_quick.grid(row=10, column=0, columnspan=2, sticky="ew", pady=(10, 0))
+        self.btn_fulfill_quick.grid(row=11, column=0, columnspan=2, sticky="ew", pady=(8, 0))
 
         # Initial check
         self.on_group_or_units_changed(None)
@@ -365,18 +391,18 @@ class RequestsView(tk.Frame):
             needed = 1
 
         if avail >= needed:
-            self.stock_indicator_box.config(bg=config.TINT_MINT_LIGHT, highlightbackground="#99F6E4")
+            self.stock_indicator_box.config(bg=config.COLOR_LIGHT_CYAN, highlightbackground=config.COLOR_PRIMARY_CYAN)
             self.lbl_stock_indicator.config(
                 text=f"✓ Stock Available: {avail} units of {bg} in blood bank (Requested: {needed})",
-                fg=config.PRIMARY_TEAL,
-                bg=config.TINT_MINT_LIGHT
+                fg=config.COLOR_DARK_NAVY,
+                bg=config.COLOR_LIGHT_CYAN
             )
         else:
-            self.stock_indicator_box.config(bg=config.TINT_DANGER_LIGHT, highlightbackground="#FECACA")
+            self.stock_indicator_box.config(bg=config.COLOR_SOFT_PINK, highlightbackground=config.COLOR_MEDICAL_RED)
             self.lbl_stock_indicator.config(
                 text=f"⚠️ Insufficient Stock: Only {avail} units of {bg} available (Short by {needed - avail} units)",
-                fg=config.COLOR_DANGER,
-                bg=config.TINT_DANGER_LIGHT
+                fg=config.COLOR_MEDICAL_RED,
+                bg=config.COLOR_SOFT_PINK
             )
 
     def load_requests(self, requests_list=None):
@@ -458,8 +484,12 @@ class RequestsView(tk.Frame):
 
         if status != "Fulfilled":
             self.btn_fulfill_quick.config(state="normal")
+            self.btn_approve.config(state="normal" if status != "Approved" else "disabled")
+            self.btn_reject.config(state="normal" if status != "Rejected" else "disabled")
         else:
             self.btn_fulfill_quick.config(state="disabled")
+            self.btn_approve.config(state="disabled")
+            self.btn_reject.config(state="disabled")
 
     def validate_inputs(self):
         """Validates all request fields using validators.py."""
@@ -564,6 +594,54 @@ class RequestsView(tk.Frame):
         else:
             messagebox.showerror("Dispensing Blocked", msg)
 
+    def quick_approve_request(self):
+        """Shortcut action: Sets status of selected requisition to Approved."""
+        if not self.selected_req_id:
+            messagebox.showwarning("Selection Required", "Please select a request from the table to approve.")
+            return
+
+        hosp = self.entry_hospital.get()
+        bg = self.combo_bg.get()
+        try:
+            units = int(self.spin_units.get())
+        except ValueError:
+            messagebox.showerror("Error", "Invalid units quantity.")
+            return
+
+        success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Approved")
+        if success:
+            messagebox.showinfo("Approved", f"Request #{self.selected_req_id} for {hosp} has been Approved.")
+            self.clear_form()
+            self.load_requests()
+            if self.on_data_changed:
+                self.on_data_changed()
+        else:
+            messagebox.showerror("Error", msg)
+
+    def quick_reject_request(self):
+        """Shortcut action: Sets status of selected requisition to Rejected."""
+        if not self.selected_req_id:
+            messagebox.showwarning("Selection Required", "Please select a request from the table to reject.")
+            return
+
+        hosp = self.entry_hospital.get()
+        bg = self.combo_bg.get()
+        try:
+            units = int(self.spin_units.get())
+        except ValueError:
+            messagebox.showerror("Error", "Invalid units quantity.")
+            return
+
+        success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Rejected")
+        if success:
+            messagebox.showinfo("Rejected", f"Request #{self.selected_req_id} for {hosp} has been Rejected.")
+            self.clear_form()
+            self.load_requests()
+            if self.on_data_changed:
+                self.on_data_changed()
+        else:
+            messagebox.showerror("Error", msg)
+
     def delete_request(self):
         """Deletes selected request with option to restore inventory if already fulfilled."""
         if not self.selected_req_id:
@@ -594,7 +672,7 @@ class RequestsView(tk.Frame):
         self.selected_req_id = None
         self.lbl_selected_id.config(
             text="● Mode: Creating New Requisition",
-            fg=config.PRIMARY_TEAL
+            fg=config.COLOR_PRIMARY_CYAN
         )
         self.entry_hospital.delete(0, tk.END)
         self.combo_bg.set(config.BLOOD_GROUPS[0])
@@ -606,6 +684,8 @@ class RequestsView(tk.Frame):
         self.btn_update.config(state="disabled")
         self.btn_delete.config(state="disabled")
         self.btn_fulfill_quick.config(state="disabled")
+        self.btn_approve.config(state="disabled")
+        self.btn_reject.config(state="disabled")
 
         if self.tree.selection():
             self.tree.selection_remove(self.tree.selection())
