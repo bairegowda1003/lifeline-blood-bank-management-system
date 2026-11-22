@@ -439,7 +439,7 @@ class BloodBankApp(tk.Tk):
 
         tk.Label(
             stud_card,
-            text="MCA Mini Project",
+            text="✚ LIFELINE",
             font=config.FONT_SMALL_BOLD,
             fg=config.COLOR_PRIMARY_CYAN,
             bg=config.COLOR_DEEP_NAVY
