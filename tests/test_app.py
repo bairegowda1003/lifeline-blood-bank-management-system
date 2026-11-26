@@ -340,10 +340,11 @@ class TestBloodBankSystem(unittest.TestCase):
 
     def test_transaction_rollback_on_failure(self):
         """
-        Verifies that multi-step transactions roll back completely if an error occurs.
+        Verifies that multi-step transactions roll back completely if an error
+        occurs AFTER an initial modification within the transaction.
         """
         donor_id = self.db.add_donor(
-            name="Transaction Test Donor",
+            name="Rollback Test Donor",
             blood_group="O+",
             phone="9876543211",
             last_donation_date="2026-01-01",
@@ -351,17 +352,68 @@ class TestBloodBankSystem(unittest.TestCase):
         )
         initial_stock = self.db.get_stock_by_group("O+")["units_available"]
 
-        # Call record_donation with negative units -> rejected without modifying DB
-        success, msg = self.db.record_donation(donor_id, -5, "2026-03-01", "2026-04-12")
-        self.assertFalse(success)
+        # Execute a transaction that modifies the donor, but then triggers a failure
+        try:
+            with self.db.connection_scope() as conn:
+                cursor = conn.cursor()
+                # 1. First modification: update donor name
+                cursor.execute("UPDATE DONORS SET name = 'Modified Name' WHERE donor_id = ?;", (donor_id,))
+                
+                # 2. Simulated failure after initial modification: invalid table query
+                cursor.execute("INSERT INTO NON_EXISTENT_TABLE VALUES (1);")
+                cursor.close()
+        except sqlite3.OperationalError:
+            pass  # Expected simulated failure
 
-        # Confirm donor last donation date was unchanged
+        # Verify that the first modification was completely rolled back!
         donor = self.db.get_donor_by_id(donor_id)
-        self.assertEqual(donor["last_donation_date"], "2026-01-01")
+        self.assertEqual(donor["name"], "Rollback Test Donor")
 
         # Confirm stock was unchanged
         current_stock = self.db.get_stock_by_group("O+")["units_available"]
         self.assertEqual(current_stock, initial_stock)
+
+    def test_fulfilled_blood_group_change_insufficient_stock_rollback(self):
+        """
+        REGRESSION TEST:
+        When an already Fulfilled request is changed to a different blood group,
+        if the new blood group has insufficient stock:
+        - The update must fail (return False).
+        - The old blood group's stock must NOT be restored or changed.
+        - The new blood group's stock must NOT be changed.
+        - The original request record must remain unchanged.
+        """
+        # 1. Setup exact scenario: O+ has 5 units, A+ has 0 units
+        o_stock = self.db.get_stock_by_group("O+")
+        a_stock = self.db.get_stock_by_group("A+")
+        self.db.update_stock_record(o_stock["stock_id"], 5, "2026-12-31")
+        self.db.update_stock_record(a_stock["stock_id"], 0, "2026-12-31")
+
+        # 2. Fulfill a request for 2 units of O+ -> O+ stock becomes 3
+        success, msg, req_id = self.db.add_request("City Hospital", "O+", 2, "Fulfilled")
+        self.assertTrue(success)
+        self.assertEqual(self.db.get_stock_by_group("O+")["units_available"], 3)
+        self.assertEqual(self.db.get_stock_by_group("A+")["units_available"], 0)
+
+        # 3. Attempt to change the fulfilled request to A+ (2 units) when A+ has 0 units
+        update_success, update_msg = self.db.update_request(req_id, "City Hospital", "A+", 2, "Fulfilled")
+
+        # 4. Verification:
+        # a) Update must return False
+        self.assertFalse(update_success)
+        self.assertIn("Cannot fulfill updated group A+", update_msg)
+
+        # b) O+ stock MUST REMAIN AT 3 (must NOT be restored to 5!)
+        self.assertEqual(self.db.get_stock_by_group("O+")["units_available"], 3)
+
+        # c) A+ stock MUST REMAIN AT 0
+        self.assertEqual(self.db.get_stock_by_group("A+")["units_available"], 0)
+
+        # d) Original request in REQUESTS table must remain unchanged (O+, 2 units, Fulfilled)
+        req = self.db.get_request_by_id(req_id)
+        self.assertEqual(req["blood_group"], "O+")
+        self.assertEqual(req["units_needed"], 2)
+        self.assertEqual(req["req_status"], "Fulfilled")
 
     def test_parameterized_query_safety(self):
         """

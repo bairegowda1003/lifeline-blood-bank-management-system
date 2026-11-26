@@ -525,19 +525,21 @@ class DatabaseManager:
                                 WHERE blood_group = ?;
                             """, (restore_qty, new_group))
                     else:
-                        # Blood group changed while fulfilled! Return old, check and deduct new
-                        cursor.execute("""
-                            UPDATE BLOOD_STOCK
-                            SET units_available = units_available + ?
-                            WHERE blood_group = ?;
-                        """, (old_units, old_group))
-
+                        # Blood group changed while fulfilled!
+                        # Verify availability of the new blood group FIRST before modifying any stock!
                         cursor.execute("SELECT * FROM BLOOD_STOCK WHERE blood_group = ?;", (new_group,))
                         stock = cursor.fetchone()
                         current_units = stock["units_available"] if stock else 0
                         if current_units < new_units:
                             return False, (f"Cannot fulfill updated group {new_group}: "
                                           f"only {current_units} units available, needed {new_units}.")
+
+                        # Both checks passed: atomically restore old group and deduct new group
+                        cursor.execute("""
+                            UPDATE BLOOD_STOCK
+                            SET units_available = units_available + ?
+                            WHERE blood_group = ?;
+                        """, (old_units, old_group))
 
                         cursor.execute("""
                             UPDATE BLOOD_STOCK
