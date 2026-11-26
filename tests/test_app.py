@@ -319,6 +319,76 @@ class TestBloodBankSystem(unittest.TestCase):
         stock = self.db.get_stock_by_group("AB+")
         self.assertEqual(stock["units_available"], 6)
 
+    # =========================================================================
+    # 6. CONNECTION LIFECYCLE & TRANSACTION ROLLBACK TESTS
+    # =========================================================================
+
+    def test_connection_lifecycle_closed(self):
+        """Verifies that connection_scope properly closes the connection upon exit."""
+        captured_conn = None
+        with self.db.connection_scope() as conn:
+            captured_conn = conn
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1;")
+            self.assertEqual(cursor.fetchone()[0], 1)
+            cursor.close()
+
+        # Outside the context manager, the connection must be closed
+        # Executing a query on a closed connection raises sqlite3.ProgrammingError
+        with self.assertRaises(sqlite3.ProgrammingError):
+            captured_conn.execute("SELECT 1;")
+
+    def test_transaction_rollback_on_failure(self):
+        """
+        Verifies that multi-step transactions roll back completely if an error occurs.
+        """
+        donor_id = self.db.add_donor(
+            name="Transaction Test Donor",
+            blood_group="O+",
+            phone="9876543211",
+            last_donation_date="2026-01-01",
+            eligibility="Eligible"
+        )
+        initial_stock = self.db.get_stock_by_group("O+")["units_available"]
+
+        # Call record_donation with negative units -> rejected without modifying DB
+        success, msg = self.db.record_donation(donor_id, -5, "2026-03-01", "2026-04-12")
+        self.assertFalse(success)
+
+        # Confirm donor last donation date was unchanged
+        donor = self.db.get_donor_by_id(donor_id)
+        self.assertEqual(donor["last_donation_date"], "2026-01-01")
+
+        # Confirm stock was unchanged
+        current_stock = self.db.get_stock_by_group("O+")["units_available"]
+        self.assertEqual(current_stock, initial_stock)
+
+    def test_parameterized_query_safety(self):
+        """
+        Verifies parameterized SQL query safety against injection payloads.
+        """
+        injection_name = "Robert'); DROP TABLE DONORS;--"
+        donor_id = self.db.add_donor(
+            name=injection_name,
+            blood_group="A+",
+            phone="9812345678",
+            last_donation_date="2026-02-01",
+            eligibility="Eligible"
+        )
+        self.assertGreater(donor_id, 0)
+
+        # Table DONORS must still exist!
+        donors = self.db.get_all_donors()
+        self.assertGreaterEqual(len(donors), 1)
+
+        # Search with SQL injection payload should return safely
+        search_res = self.db.search_donors(query="Robert'); DROP TABLE")
+        self.assertEqual(len(search_res), 1)
+        self.assertEqual(search_res[0]["name"], injection_name)
+
+        # Clean up
+        self.db.delete_donor(donor_id)
+
 
 if __name__ == "__main__":
     unittest.main()

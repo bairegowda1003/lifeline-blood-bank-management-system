@@ -7,6 +7,7 @@ live stock availability checks, status state transitions, and safe inventory dis
 
 import tkinter as tk
 from tkinter import ttk, messagebox
+import sqlite3
 import config
 import validators
 from ui_components import Card, StatusBadge, ThemedButton, FormFieldWrapper
@@ -539,6 +540,10 @@ class RequestsView(tk.Frame):
                 messagebox.showerror("Error", msg)
         except validators.ValidationError as ve:
             messagebox.showerror("Validation Error", str(ve))
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"A database error occurred:\n{str(se)}")
         except Exception as e:
             messagebox.showerror("System Error", f"Failed to submit request:\n{str(e)}")
 
@@ -561,6 +566,10 @@ class RequestsView(tk.Frame):
                 messagebox.showerror("Error", msg)
         except validators.ValidationError as ve:
             messagebox.showerror("Validation Error", str(ve))
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"A database error occurred:\n{str(se)}")
         except Exception as e:
             messagebox.showerror("System Error", f"Failed to update request:\n{str(e)}")
 
@@ -589,15 +598,22 @@ class RequestsView(tk.Frame):
         if not confirm:
             return
 
-        success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Fulfilled")
-        if success:
-            messagebox.showinfo("Dispensed Successfully", f"Request #{self.selected_req_id} has been fulfilled!\n{units} units of {bg} dispensed to {hosp}.")
-            self.clear_form()
-            self.load_requests()
-            if self.on_data_changed:
-                self.on_data_changed()
-        else:
-            messagebox.showerror("Dispensing Blocked", msg)
+        try:
+            success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Fulfilled")
+            if success:
+                messagebox.showinfo("Dispensed Successfully", f"Request #{self.selected_req_id} has been fulfilled!\n{units} units of {bg} dispensed to {hosp}.")
+                self.clear_form()
+                self.load_requests()
+                if self.on_data_changed:
+                    self.on_data_changed()
+            else:
+                messagebox.showerror("Dispensing Blocked", msg)
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"A database error occurred:\n{str(se)}")
+        except Exception as e:
+            messagebox.showerror("System Error", f"Failed to dispense blood:\n{str(e)}")
 
     def quick_approve_request(self):
         """Shortcut action: Sets status of selected requisition to Approved."""
@@ -613,15 +629,22 @@ class RequestsView(tk.Frame):
             messagebox.showerror("Error", "Invalid units quantity.")
             return
 
-        success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Approved")
-        if success:
-            messagebox.showinfo("Approved", f"Request #{self.selected_req_id} for {hosp} has been Approved.")
-            self.clear_form()
-            self.load_requests()
-            if self.on_data_changed:
-                self.on_data_changed()
-        else:
-            messagebox.showerror("Error", msg)
+        try:
+            success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Approved")
+            if success:
+                messagebox.showinfo("Approved", f"Request #{self.selected_req_id} for {hosp} has been Approved.")
+                self.clear_form()
+                self.load_requests()
+                if self.on_data_changed:
+                    self.on_data_changed()
+            else:
+                messagebox.showerror("Error", msg)
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"A database error occurred:\n{str(se)}")
+        except Exception as e:
+            messagebox.showerror("System Error", f"Failed to approve request:\n{str(e)}")
 
     def quick_reject_request(self):
         """Shortcut action: Sets status of selected requisition to Rejected."""
@@ -637,15 +660,22 @@ class RequestsView(tk.Frame):
             messagebox.showerror("Error", "Invalid units quantity.")
             return
 
-        success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Rejected")
-        if success:
-            messagebox.showinfo("Rejected", f"Request #{self.selected_req_id} for {hosp} has been Rejected.")
-            self.clear_form()
-            self.load_requests()
-            if self.on_data_changed:
-                self.on_data_changed()
-        else:
-            messagebox.showerror("Error", msg)
+        try:
+            success, msg = self.db.update_request(self.selected_req_id, hosp, bg, units, "Rejected")
+            if success:
+                messagebox.showinfo("Rejected", f"Request #{self.selected_req_id} for {hosp} has been Rejected.")
+                self.clear_form()
+                self.load_requests()
+                if self.on_data_changed:
+                    self.on_data_changed()
+            else:
+                messagebox.showerror("Error", msg)
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"A database error occurred:\n{str(se)}")
+        except Exception as e:
+            messagebox.showerror("System Error", f"Failed to reject request:\n{str(e)}")
 
     def delete_request(self):
         """Deletes selected request with option to restore inventory if already fulfilled."""
@@ -662,15 +692,22 @@ class RequestsView(tk.Frame):
         if not confirm:
             return
 
-        success, msg = self.db.delete_request(self.selected_req_id, restore_if_fulfilled=True)
-        if success:
-            messagebox.showinfo("Success", f"{msg}")
-            self.clear_form()
-            self.load_requests()
-            if self.on_data_changed:
-                self.on_data_changed()
-        else:
-            messagebox.showerror("Error", msg)
+        try:
+            success, msg = self.db.delete_request(self.selected_req_id, restore_if_fulfilled=True)
+            if success:
+                messagebox.showinfo("Success", f"{msg}")
+                self.clear_form()
+                self.load_requests()
+                if self.on_data_changed:
+                    self.on_data_changed()
+            else:
+                messagebox.showerror("Error", msg)
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"A database error occurred:\n{str(se)}")
+        except Exception as e:
+            messagebox.showerror("System Error", f"Failed to delete request:\n{str(e)}")
 
     def clear_form(self):
         """Clears form fields and resets selection state."""

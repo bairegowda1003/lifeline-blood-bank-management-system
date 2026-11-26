@@ -7,6 +7,7 @@ regular expression validation, multi-parameter search, and directory tracking.
 
 import tkinter as tk
 from tkinter import ttk, messagebox
+import sqlite3
 from datetime import date, datetime
 import tkcalendar
 
@@ -487,8 +488,12 @@ class DonorView(tk.Frame):
                 self.on_data_changed()
         except validators.ValidationError as ve:
             messagebox.showerror("Validation Error", str(ve))
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity conflict:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"Database error:\n{str(se)}")
         except Exception as e:
-            messagebox.showerror("Database Error", f"Failed to add donor:\n{str(e)}")
+            messagebox.showerror("System Error", f"Failed to add donor:\n{str(e)}")
 
     def update_donor(self):
         """Updates the selected donor record in SQLite."""
@@ -509,8 +514,12 @@ class DonorView(tk.Frame):
                 messagebox.showerror("Error", "Update failed. Record may have been modified or deleted.")
         except validators.ValidationError as ve:
             messagebox.showerror("Validation Error", str(ve))
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity conflict:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"Database error:\n{str(se)}")
         except Exception as e:
-            messagebox.showerror("Database Error", f"Failed to update donor:\n{str(e)}")
+            messagebox.showerror("System Error", f"Failed to update donor:\n{str(e)}")
 
     def delete_donor(self):
         """Deletes the selected donor after user confirmation."""
@@ -536,8 +545,12 @@ class DonorView(tk.Frame):
                     self.on_data_changed()
             else:
                 messagebox.showerror("Error", "Could not delete donor. Record might not exist.")
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Cannot delete donor due to database constraints:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"Database error:\n{str(se)}")
         except Exception as e:
-            messagebox.showerror("Database Error", f"Failed to delete donor:\n{str(e)}")
+            messagebox.showerror("System Error", f"Failed to delete donor:\n{str(e)}")
 
     def clear_form(self):
         """Clears form fields and resets selection mode."""

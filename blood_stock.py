@@ -7,6 +7,7 @@ atomic donation intake, batch shelf-life monitoring, and stock registers.
 
 import tkinter as tk
 from tkinter import ttk, messagebox
+import sqlite3
 from datetime import date, datetime, timedelta
 import tkcalendar
 
@@ -557,23 +558,30 @@ class BloodStockView(tk.Frame):
             return
         units = res
 
-        donation_date = self.date_donation.get_date().strftime("%Y-%m-%d")
-        expiry_date = self.date_expiry.get_date().strftime("%Y-%m-%d")
+        try:
+            donation_date = self.date_donation.get_date().strftime("%Y-%m-%d")
+            expiry_date = self.date_expiry.get_date().strftime("%Y-%m-%d")
 
-        success, msg = self.db.record_donation(
-            donor_id=donor["donor_id"],
-            units=units,
-            donation_date=donation_date,
-            expiry_date=expiry_date
-        )
+            success, msg = self.db.record_donation(
+                donor_id=donor["donor_id"],
+                units=units,
+                donation_date=donation_date,
+                expiry_date=expiry_date
+            )
 
-        if success:
-            messagebox.showinfo("Donation Recorded", f"{msg}\n\nInventory updated successfully.")
-            self.refresh_stock()
-            if self.on_data_changed:
-                self.on_data_changed()
-        else:
-            messagebox.showerror("Transaction Error", msg)
+            if success:
+                messagebox.showinfo("Donation Recorded", f"{msg}\n\nInventory updated successfully.")
+                self.refresh_stock()
+                if self.on_data_changed:
+                    self.on_data_changed()
+            else:
+                messagebox.showerror("Transaction Error", msg)
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error during donation:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"A database error occurred:\n{str(se)}")
+        except Exception as e:
+            messagebox.showerror("Transaction Error", f"Unexpected error during donation:\n{str(e)}")
 
     def submit_adjustment(self):
         """Saves manual stock unit and expiry changes."""
@@ -600,5 +608,9 @@ class BloodStockView(tk.Frame):
             self.refresh_stock()
             if self.on_data_changed:
                 self.on_data_changed()
+        except sqlite3.IntegrityError as ie:
+            messagebox.showerror("Database Conflict", f"Database integrity error:\n{str(ie)}")
+        except sqlite3.Error as se:
+            messagebox.showerror("Database Error", f"Database error:\n{str(se)}")
         except Exception as e:
             messagebox.showerror("Database Error", f"Failed to update stock:\n{str(e)}")
