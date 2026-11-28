@@ -1,6 +1,6 @@
 # LIFELINE — Blood Bank Donor Directory & Stock Tracker
 
-A desktop application for maintaining blood donor records, monitoring blood stock and managing hospital blood requests. Developed as an MCA academic mini-project using **Python, Tkinter and SQLite**.
+A standalone desktop application for maintaining blood donor records, monitoring blood stock, and managing hospital blood requests. Developed as an MCA third-semester academic mini-project using **Python, Tkinter, and SQLite**.
 
 <p align="center">
   <img src="screenshots/01_dashboard.png" alt="LIFELINE dashboard" width="850">
@@ -11,18 +11,18 @@ A desktop application for maintaining blood donor records, monitoring blood stoc
   <img src="https://img.shields.io/badge/GUI-Tkinter%20%2B%20ttkbootstrap-0F9D9A" alt="Tkinter and ttkbootstrap">
   <img src="https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite" alt="SQLite">
   <img src="https://img.shields.io/badge/Platform-Windows-0078D4?logo=windows" alt="Windows">
-  <img src="https://img.shields.io/badge/Project-MCA%20Mini--Project-526579" alt="MCA Mini Project">
+  <img src="https://img.shields.io/badge/Project-MCA%20Mini--Project-526579" alt="MCA mini-project">
 </p>
 
 ---
 
 ## 1. Project Overview
 
-Blood banks need to keep donor information, blood stock levels and hospital requests organised. When these records are maintained manually, finding information and keeping stock figures up to date can become difficult.
+Blood banks need to maintain donor information, available blood stock, and hospital requests. Managing these records manually can make it difficult to find donor details, check stock availability, and keep request information up to date.
 
-**LIFELINE** brings these basic activities together in one standalone desktop application. Users can manage donor records, view the availability of the eight standard blood groups, record donations and process hospital requests. The information is stored locally in an SQLite database.
+**LIFELINE** brings these activities together in one desktop application. It allows users to manage donor records, monitor the eight standard blood groups, record donations, and process hospital requests. Application data is stored locally in an SQLite database.
 
-This project was developed to apply concepts learned during the MCA programme, including GUI development, database connectivity, CRUD operations, input validation and transaction handling.
+The project was developed to practise Python GUI development, database connectivity, CRUD operations, input validation, exception handling, and database transaction management.
 
 ## 2. Project Details
 
@@ -33,46 +33,46 @@ This project was developed to apply concepts learned during the MCA programme, i
 | Programme | Master of Computer Applications (MCA) |
 | Semester | 3rd Semester |
 | Developer | Baire Gowda |
-| Application type | Standalone desktop GUI |
+| Application type | Standalone desktop application |
 | Main technologies | Python, Tkinter, SQLite |
 
 ## 3. Main Features
 
-### Overview Dashboard
-- Displays summary cards for registered donors, available blood units, pending requests and blood groups with stock.
-- Shows stock information for A+, A-, B+, B-, AB+, AB-, O+ and O-.
+### Dashboard
+- Displays an overview of donor records, available blood units, pending requests, and stock information.
+- Shows the eight standard blood groups: A+, A-, B+, B-, AB+, AB-, O+, and O-.
 - Highlights low-stock and expiry-related information.
-- Provides quick access to the main application modules.
+- Provides navigation to the main application modules.
 
 ### Donor Directory
-- Register, view, search, update and delete donor records.
-- Store donor name, blood group (including Rh designation), mobile number, last donation date and eligibility status.
-- Validate required fields and mobile number format.
-- Search and filter the donor list.
+- Register, view, search, update, and delete donor records.
+- Store donor name, blood group (including its Rh designation), phone number, last donation date, and eligibility status.
+- Validate required fields and phone number format.
+- Search and filter donor records.
 
 ### Blood Inventory
-- Monitor the available units for all eight standard blood groups.
-- Record a donation and update the donor's last donation date and related stock.
-- Make direct stock adjustments.
-- View stock and expiry information using the inventory register.
+- Monitor available units for all eight standard blood groups.
+- Record donations and update the donor's last donation date and related stock.
+- Make stock adjustments.
+- View stock and expiry information in the inventory register.
 
 ### Hospital Requests
-- Record hospital name, required blood group and number of units.
-- Manage request statuses: Pending, Approved, Rejected and Fulfilled.
-- Check available stock before fulfilling a request.
-- Deduct stock when a request is fulfilled, rather than when it is only submitted or approved.
-- Apply safeguards against duplicate stock deductions and handle stock restoration when a fulfilled request is reverted or deleted.
+- Record hospital name, required blood group, and number of units needed.
+- Manage request statuses: Pending, Approved, Rejected, and Fulfilled.
+- Check stock availability before fulfilling a request.
+- Deduct stock when a request is fulfilled, not merely when it is submitted or approved.
+- Prevent duplicate stock deductions and restore stock when a fulfilled request is reverted or deleted.
 
 ### About & Help
-- Displays project information, technology details and a summary of the application workflow.
+- Displays project information, technology details, and a summary of the application workflow.
 
 ## 4. Application Screenshots
 
-The following screenshots show the main screens of the application.
+The following screenshots show the main application screens.
 
-| Screen | Preview |
+| Screen | Screenshot |
 |---|---|
-| Overview Dashboard | ![Overview Dashboard](screenshots/01_dashboard.png) |
+| Dashboard | ![Dashboard](screenshots/01_dashboard.png) |
 | Donor Directory | ![Donor Directory](screenshots/02_donor_directory.png) |
 | Blood Inventory | ![Blood Inventory](screenshots/03_blood_inventory.png) |
 | Hospital Requests | ![Hospital Requests](screenshots/04_hospital_requests.png) |
@@ -87,19 +87,19 @@ The following screenshots show the main screens of the application.
 | `ttkbootstrap` | Themed interface components |
 | SQLite 3 | Local relational database |
 | Python `sqlite3` | Database connectivity and SQL operations |
-| `tkcalendar` | Date selection widget |
-| `Pillow` | Image handling where required |
+| `tkcalendar` | Date selection |
+| `Pillow` | Image handling |
 | `re` | Regular-expression based input validation |
 
-The application uses Tkinter layout managers such as `pack()` and `grid()`, and widgets including labels, entry fields, buttons, comboboxes, spinboxes, date pickers, message boxes and `ttk.Treeview`.
+The interface uses Tkinter layout managers such as `pack()` and `grid()`, with widgets including labels, entry fields, buttons, comboboxes, spinboxes, date pickers, message boxes, and `ttk.Treeview`.
 
 ## 6. Application Architecture
 
 The project is organised into three main layers:
 
 1. **Presentation layer** — Tkinter screens and reusable interface components.
-2. **Business logic and validation layer** — application workflows and input checks.
-3. **Database layer** — SQLite connections, SQL operations and transaction handling.
+2. **Application logic and validation layer** — application workflows and input checks.
+3. **Database layer** — SQLite connections, SQL operations, and transaction handling.
 
 ```text
                  User
@@ -114,14 +114,14 @@ The project is organised into three main layers:
            Database Access Layer
                   |
                   v
-              SQLite 3
-           /      |       \
-       DONORS  BLOOD_STOCK  REQUESTS
+               SQLite 3
+             /    |     \
+         DONORS  BLOOD_STOCK  REQUESTS
 ```
 
 ## 7. Database Design
 
-The application uses SQLite and is designed around the three primary tables required for the project:
+The application uses three main tables:
 
 | Table | Purpose | Main fields |
 |---|---|---|
@@ -129,14 +129,13 @@ The application uses SQLite and is designed around the three primary tables requ
 | `BLOOD_STOCK` | Stores available blood stock | `stock_id`, `blood_group`, `units_available`, `expiry_date` |
 | `REQUESTS` | Stores hospital requests | `req_id`, `hospital_name`, `blood_group`, `units_needed`, `req_status` |
 
-The database file is located at `database/blood_bank.db`. It is created or initialised by the application when required.
+The database file is located at `database/blood_bank.db`. The application creates or initialises the database when required.
 
-**Note about SQLite:** SQLite automatically maintains an internal table called `sqlite_sequence` for tables that use `AUTOINCREMENT` columns. Therefore, DB Browser for SQLite may display four tables. The three main application tables are `DONORS`, `BLOOD_STOCK` and `REQUESTS`. The internal `sqlite_sequence` table is not an additional application table.
+**About `sqlite_sequence`:** SQLite automatically maintains an internal table named `sqlite_sequence` for tables that use `AUTOINCREMENT`. DB Browser for SQLite may therefore display this internal table alongside the three application tables. The three main application tables are `DONORS`, `BLOOD_STOCK`, and `REQUESTS`.
 
 ### Data Handling
-
-- Parameterized SQL statements are used when passing values to database queries.
-- Input validation is performed before saving relevant records.
+- Parameterized SQL statements are used to pass values to database queries.
+- Input validation is performed before relevant records are saved.
 - Transactions are used for related updates, such as recording a donation and updating stock.
 - Stock availability is checked before a hospital request is fulfilled.
 
@@ -150,7 +149,7 @@ Blood Bank Donor Directory & Stock Tracker/
 ├── ui_components.py         # Reusable interface components
 ├── database.py              # SQLite database operations
 ├── validators.py            # Input validation functions
-├── dashboard.py             # Overview dashboard
+├── dashboard.py             # Dashboard module
 ├── donor.py                 # Donor directory module
 ├── blood_stock.py           # Blood inventory and donation intake
 ├── requests.py              # Hospital request management
@@ -184,7 +183,6 @@ Blood Bank Donor Directory & Stock Tracker/
 ## 9. Installation and Setup
 
 ### Requirements
-
 - Windows 10 or Windows 11
 - Python 3.12 recommended
 - `pip` available from the command line
@@ -219,45 +217,45 @@ The application stores its data locally in:
 database/blood_bank.db
 ```
 
-Keep this file inside the project's `database` folder when running the application. It contains the donor, blood stock and hospital request records.
+Keep this file inside the project's `database` folder when running the application. It contains the donor, blood stock, and hospital request records.
 
 ## 10. Running the Tests
 
-To run the automated test suite from the project directory:
+Run the automated test suite from the project directory:
 
 ```powershell
 python -m unittest discover -s tests -v
 ```
 
-The tests are intended to check database setup, validation, donor operations, donation intake, request fulfilment and GUI workflows.
+The tests are intended to check database setup, validation, donor operations, donation intake, request fulfilment, and GUI workflows.
 
 ### Latest Reported Test Results
 
-The latest test run reported by the development environment showed the following results:
+The latest test run reported by the development environment showed:
 
-| Test Result | Count |
+| Result | Count |
 |---|---:|
 | Total tests | 18 |
 | Passed | 18 |
 | Failed | 0 |
 | Errors | 0 |
 
-Run the test command above on your computer to verify the results in your local environment.
+These figures are based on the latest reported run. Run the command above in your local environment to verify the results on your computer.
 
 ## 11. Input Validation and Data Safety
 
-The application includes checks for required values, donor details, mobile number format, dates and numeric unit quantities. It uses message boxes to display feedback to the user.
+The application checks required values, donor details, phone number format, dates, and numeric unit quantities. It uses message boxes to provide feedback to the user.
 
 For hospital requests, stock is checked before fulfilment. The application is designed to prevent stock from becoming negative and to avoid deducting stock more than once for the same fulfilled request.
 
-Parameterized SQL queries are used to safely pass user-provided values to database operations.
+Parameterized SQL queries are used to pass user-provided values to database operations.
 
-## 12. Current Scope and Limitations
+## 12. Scope and Limitations
 
 - The application is a local desktop project using an SQLite database.
-- It is designed for demonstration and academic learning, not as a certified clinical blood bank system.
+- It is designed for academic demonstration and learning, not as a certified clinical blood bank system.
 - Donor eligibility is recorded by the user and must be verified by authorised medical staff.
-- Online access, multi-branch synchronisation and external hospital integration are not included.
+- Online access, multi-branch synchronisation, and external hospital integration are not included.
 - SMS and email notifications are possible future additions.
 
 ## 13. Possible Future Improvements
@@ -274,12 +272,12 @@ Parameterized SQL queries are used to safely pass user-provided values to databa
 While developing this project, I practised:
 
 - Building a standalone GUI application using Python Tkinter.
-- Connecting Python applications with an SQLite database.
+- Connecting a Python application with an SQLite database.
 - Performing CRUD operations using SQL.
 - Validating user input and handling errors.
 - Using database transactions for related updates.
 - Organising a Python project into separate modules.
-- Testing application workflows and documenting the result.
+- Testing application workflows and documenting the results.
 
 ## 15. References
 
@@ -294,6 +292,3 @@ While developing this project, I practised:
 **LIFELINE — Blood Bank Donor Directory & Stock Tracker**
 
 *MCA 3rd Semester Academic Mini-Project*
-P r o j e c t   u p d a t e   2  
- P r o j e c t   u p d a t e   4  
- 
