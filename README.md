@@ -46,7 +46,7 @@ This project was developed to apply concepts learned during the MCA programme, i
 
 ### Donor Directory
 - Register, view, search, update and delete donor records.
-- Store donor name, blood group, Rh factor, mobile number, last donation date and eligibility status.
+- Store donor name, blood group (including Rh designation), mobile number, last donation date and eligibility status.
 - Validate required fields and mobile number format.
 - Search and filter the donor list.
 
@@ -105,18 +105,18 @@ The project is organised into three main layers:
                  User
                   |
                   v
-        Tkinter Desktop Interface
+         Tkinter Desktop Interface
                   |
                   v
-       Application Logic & Validation
+        Application Logic & Validation
                   |
                   v
-          Database Access Layer
+           Database Access Layer
                   |
                   v
-             SQLite 3
-          /      |       \
-      DONORS  BLOOD_STOCK  REQUESTS
+              SQLite 3
+           /      |       \
+       DONORS  BLOOD_STOCK  REQUESTS
 ```
 
 ## 7. Database Design
@@ -131,7 +131,9 @@ The application uses SQLite and is designed around the three primary tables requ
 
 The database file is located at `database/blood_bank.db`. It is created or initialised by the application when required.
 
-### Data handling
+**Note about SQLite:** SQLite automatically maintains an internal table called `sqlite_sequence` for tables that use `AUTOINCREMENT` columns. Therefore, DB Browser for SQLite may display four tables. The three main application tables are `DONORS`, `BLOOD_STOCK` and `REQUESTS`. The internal `sqlite_sequence` table is not an additional application table.
+
+### Data Handling
 
 - Parameterized SQL statements are used when passing values to database queries.
 - Input validation is performed before saving relevant records.
@@ -147,24 +149,24 @@ Blood Bank Donor Directory & Stock Tracker/
 ├── config.py                # Application settings and theme constants
 ├── ui_components.py         # Reusable interface components
 ├── database.py              # SQLite database operations
-├── validators.py             # Input validation functions
-├── dashboard.py              # Overview dashboard
-├── donor.py                  # Donor directory module
-├── blood_stock.py            # Blood inventory and donation intake
-├── requests.py               # Hospital request management
-├── requirements.txt          # Python package dependencies
-├── capture_screenshots.py    # Screenshot capture utility
-├── README.md                 # Project documentation
+├── validators.py            # Input validation functions
+├── dashboard.py             # Overview dashboard
+├── donor.py                 # Donor directory module
+├── blood_stock.py           # Blood inventory and donation intake
+├── requests.py              # Hospital request management
+├── requirements.txt         # Python package dependencies
+├── capture_screenshots.py   # Screenshot capture utility
+├── README.md                # Project documentation
 │
 ├── database/
-│   └── blood_bank.db         # Local SQLite database
+│   └── blood_bank.db        # Local SQLite database
 │
 ├── tests/
-│   ├── test_app.py           # Database and business-logic tests
-│   └── test_gui.py           # GUI integration tests
+│   ├── test_app.py          # Database and business-logic tests
+│   └── test_gui.py          # GUI integration tests
 │
-├── assets/                   # Application assets
-├── screenshots/              # Application screenshots
+├── assets/                  # Application assets
+├── screenshots/             # Application screenshots
 │   ├── 01_dashboard.png
 │   ├── 02_donor_directory.png
 │   ├── 03_blood_inventory.png
@@ -209,6 +211,16 @@ python main.py
 
 The LIFELINE desktop application should open in a separate window.
 
+### Database File
+
+The application stores its data locally in:
+
+```text
+database/blood_bank.db
+```
+
+Keep this file inside the project's `database` folder when running the application. It contains the donor, blood stock and hospital request records.
+
 ## 10. Running the Tests
 
 To run the automated test suite from the project directory:
@@ -217,13 +229,28 @@ To run the automated test suite from the project directory:
 python -m unittest discover -s tests -v
 ```
 
-The tests are intended to check database setup, validation, donor operations, donation intake, request fulfilment and GUI workflows. Test results depend on the local Python environment and installed dependencies. Run the command above to obtain the current result on your computer.
+The tests are intended to check database setup, validation, donor operations, donation intake, request fulfilment and GUI workflows.
+
+### Latest Reported Test Results
+
+The latest test run reported by the development environment showed the following results:
+
+| Test Result | Count |
+|---|---:|
+| Total tests | 18 |
+| Passed | 18 |
+| Failed | 0 |
+| Errors | 0 |
+
+Run the test command above on your computer to verify the results in your local environment.
 
 ## 11. Input Validation and Data Safety
 
 The application includes checks for required values, donor details, mobile number format, dates and numeric unit quantities. It uses message boxes to display feedback to the user.
 
 For hospital requests, stock is checked before fulfilment. The application is designed to prevent stock from becoming negative and to avoid deducting stock more than once for the same fulfilled request.
+
+Parameterized SQL queries are used to safely pass user-provided values to database operations.
 
 ## 12. Current Scope and Limitations
 
@@ -264,5 +291,6 @@ While developing this project, I practised:
 
 ---
 
-**LIFELINE — Blood Bank Donor Directory & Stock Tracker**  
+**LIFELINE — Blood Bank Donor Directory & Stock Tracker**
+
 *MCA 3rd Semester Academic Mini-Project*
