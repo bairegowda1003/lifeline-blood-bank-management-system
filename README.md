@@ -294,3 +294,5 @@ While developing this project, I practised:
 **LIFELINE — Blood Bank Donor Directory & Stock Tracker**
 
 *MCA 3rd Semester Academic Mini-Project*
+P r o j e c t   u p d a t e   2  
+ 
